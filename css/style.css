@@ -1,0 +1,18 @@
+.body{
+    background-color: #03060F;
+    background-image: url(../assets/fondovideoclub.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.contenedor{
+    background-color: white;
+    margin: 0 auto;
+    width: 1080px;
+    margin-top: 50px; 
+    border-radius: 10px;
+    height: 90vh;
+}
+.main__h1{
+    text-align: center;
+    padding-top:50px;
+}
