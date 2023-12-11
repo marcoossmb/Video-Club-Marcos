@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "spritz";
+    src: url(../assets/fonts/SpritzAndDelicious.otf);
+}
+
+.body{
+    background-color: #03060F;
+    background-image: url(../assets/images/fondovideoclub.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.contenedor{
+    background-color: white;
+    margin: 0 auto;
+    width: 1080px;
+    margin-top: 10px;
+    border-radius: 10px;
+    height: 900px;
+    font-family: "spritz";
+}

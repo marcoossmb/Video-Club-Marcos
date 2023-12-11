@@ -23,7 +23,7 @@
                 </div>
                 <div class="mt-5 d-flex flex-column align-items-center">
                     <h2 class="main__title">Iniciar Sesión</h2>
-                    <form class="d-flex flex-column align-items-center" method="post" action="./pages/calendario.php">
+                    <form class="d-flex flex-column align-items-center" method="post" action="./pages/videoclub.php">
                         <div class="mt-4 box__form">
                             <label class="form-label">Usuario</label>
                             <input maxlength="20" name="user" type="text" class="form-control w-50 outline-0" id="inputEmail1">
@@ -32,12 +32,19 @@
                             <label class="form-label">Contraseña</label>
                             <input maxlength="15" name="password" type="password" class="form-control w-50 outline-0" id="inputPassword1">
                         </div>
+                        <?php
+                        if (isset($_GET ['error'])) {
+                        echo '<div class="mt-4">
+                                <p class="text-center text-danger font fw-bold">Usuario o Contraseña incorrecto</p>
+                              </div>';
+                        }                   
+                        ?>                        
                         <button class="mt-3 main__btn d-flex justify-content-center border-0 rounded" type="submit">Entrar</button>
                     </form>
                 </div>               
             </main>
             <!-- FIN DEL MAIN -->
-        </div> 
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
 </html>
