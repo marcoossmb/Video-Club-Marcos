@@ -69,8 +69,4 @@ class Pelicula {
     public function __destruct() {
         
     }
-
-    public function obtenerPropiedades($atributo) {
-        return $this->$atributo;
-    }
 }
