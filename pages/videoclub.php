@@ -1,35 +1,48 @@
 <?php
+include '../lib/model/actor.php';
+include '../lib/model/pelicula.php';
+include '../lib/model/usuario.php';
+
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user = $_POST['user'];
-    $contrasena = hash("sha256", $_POST['password']);
+$cadena_conexion = 'mysql:dbname=videoclub;host=127.0.0.1';
+$usuario = 'root';
+$clave = '';
 
-    $cadena_conexion = 'mysql:dbname=videoclub;host=127.0.0.1';
-    $usuario = 'root';
-    $clave = '';
+try {
+    // Se crea la conexión con la base de datos
+    $bd = new PDO($cadena_conexion, $usuario, $clave);
 
-    try {
-        //Se crea la conexión con la base de datos
-        $bd = new PDO($cadena_conexion, $usuario, $clave);
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $user = $_POST['user'];
+        $contrasena = hash("sha256", $_POST['password']);
+
         $sql = 'SELECT username,password,rol FROM usuarios where username="' . $user . '"and password="' . $contrasena . '"';
-        $user_result = $bd->query($sql);
+        $result = $bd->query($sql);
 
-        if ($user_result->rowCount() > 0) {
-            foreach ($user_result as $row) {
+        if ($result->rowCount() > 0) {
+            foreach ($result as $row) {
                 $_SESSION['username'] = $row['username'];
             }
         } else {
             header("Location: ../index.php?error");
         }
-
-        //Se cierra la conexión
-        $bd = null;
-    } catch (Exception $e) {
-        echo "Error con la base de datos: " . $e->getMessage();
+    } else {
+        header("Location: ../index.php");
     }
-} else {
-    header("Location: ../index.php");
+
+    $arraypeliculas = array();
+    $sql2 = 'SELECT * FROM peliculas ';
+    $peliculas = $bd->query($sql2);
+    foreach ($peliculas as $linea) {
+        $pelicula = new Pelicula($linea["id"], $linea["titulo"], $linea["genero"], $linea["pais"], $linea["anyo"], $linea["cartel"]);
+        array_push($arraypeliculas, $pelicula);
+    }
+
+    // Se cierra la conexión
+    $bd = null;
+} catch (Exception $e) {
+    echo "Error con la base de datos: " . $e->getMessage();
 }
 ?>
 <!DOCTYPE html>
@@ -46,13 +59,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="contenedor">
             <!-- INICIO DEL HEADER -->
             <header>
-                <h1>Bienvenido <?php echo $_SESSION['username'] ?></h1>
+                <h1 class="text-center pt-4">Bienvenido <?php echo ucfirst($_SESSION['username']) ?></h1>
             </header>
             <!-- FIN DEL HEADER -->
 
             <!-- INICIO DEL MAIN -->
             <main class="main">
-
+                <a href="../index.php" class="link">Cerrar Sesión</a>
+                <h2 class="ms-5">Películas</h2>
+                <div class="d-flex flex-wrap box__peliculas justify-content-center">
+                    <?php
+                    foreach ($arraypeliculas as $pelicula) {
+                        ?>
+                        <div class="box__img">
+                            <img class="img__pelicula" src="../assets/images/<?php echo $pelicula->obtenerPropiedades("cartel") ?>" alt="">
+                            <p class="mt-3"><?php echo $pelicula->obtenerPropiedades("titulo") ?> </p>
+                            <p><?php echo "Año: " . $pelicula->obtenerPropiedades("anyo") ?></p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <?php
+                if ($_SESSION['username'] != "admin") {
+                    ?>
+                    <div class="mt-5 mb-5 pb-5 d-flex justify-content-evenly border-top pt-5">
+                        <form class="ml-5" method="post" action="">
+                            <h2 class="form__h2">Enviar Incidencia</h2><br>
+                            <label class="box__peliculas">Asunto</label><br>
+                            <input class="form-control outline-0" type="text" name="subjet"> <br>
+                            <label class="box__peliculas">Mensaje</label><br>
+                            <textarea class="form-control outline-0" name="mensaje" rows="4" cols="50"></textarea><br>
+                            <button class="mt-3 p-2 form__btn d-flex justify-content-center border-0 rounded" type="submit" value="" name="send">Enviar</button>
+                        </form>
+                        <div>
+                            <img class="form__img" src="../assets/images/incidencia.jpeg" alt="alt"/>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
             </main>
             <!-- FIN DEL MAIN -->
         </div> 

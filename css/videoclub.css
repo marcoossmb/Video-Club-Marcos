@@ -3,18 +3,72 @@
     src: url(../assets/fonts/SpritzAndDelicious.otf);
 }
 
-.body{
+.body {
     background-color: #03060F;
     background-image: url(../assets/images/fondovideoclub.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
 }
-.contenedor{
+.contenedor {
     background-color: white;
     margin: 0 auto;
     width: 1080px;
     margin-top: 10px;
     border-radius: 10px;
-    height: 900px;
     font-family: "spritz";
+}
+.main {
+    position: relative;
+}
+.link {
+    position: absolute;
+    right: 50px;
+    top: 0;
+    text-decoration: none;
+    color: black;
+    border-bottom:3px solid #CF7838;
+    padding: 5px;
+    font-family: "arial";
+}
+.link:hover {
+    border-bottom:3px solid #B25828;
+}
+.box__peliculas {
+    font-family: "arial";
+}
+.box__img {
+    width: 200px;
+    margin: 20px;
+    text-align: center;
+}
+.img__pelicula {
+    width: 200px;
+    height: 80%;
+    object-fit: cover;
+}
+
+.box__email{
+    width: 600px;
+    border: 1px solid black;
+}
+
+.form__img{
+    width: 300px;
+    border-radius: 10px;
+}
+.form-control{
+    font-family: "arial";
+}
+.form-control.outline-0:focus {
+    box-shadow: 0px 0px 10px 1px #B9D6E8;
+    border-color: #B9D6E8;
+}
+
+.form__btn{
+    font-family: "arial";
+    background-color: #B9D6E8;
+}
+.form__btn:hover{
+    background-color: #5E819D;
+    color: white;
 }

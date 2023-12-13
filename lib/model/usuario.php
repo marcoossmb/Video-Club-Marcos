@@ -44,6 +44,6 @@
             $this->rol = $rol;
         }
         public function __destruct() {
-            echo "El usuario ".$this->getUsername()." ha sido borrado";
+            
         }
     }

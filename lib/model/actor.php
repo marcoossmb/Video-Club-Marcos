@@ -47,6 +47,6 @@ class Actor {
     }
 
     public function __destruct() {
-        echo "El actor " . $this->getNombre() . " ha sido borrado";
+        
     }
 }
