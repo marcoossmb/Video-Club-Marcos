@@ -37,9 +37,10 @@
     font-family: "arial";
 }
 .box__img {
-    width: 200px;
+    width: 300px;
     margin: 20px;
     text-align: center;
+    padding: 10px;
 }
 .img__pelicula {
     width: 200px;
@@ -82,7 +83,7 @@
     border-radius: 10px;
     border: 0;
     width: 50px;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: white;
     background-color: #B9D6E8;
 }

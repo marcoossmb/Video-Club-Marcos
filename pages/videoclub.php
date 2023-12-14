@@ -17,12 +17,13 @@ try {
         $user = $_POST['user'];
         $contrasena = hash("sha256", $_POST['password']);
 
-        $sql = 'SELECT username,password,rol FROM usuarios where username="' . $user . '"and password="' . $contrasena . '"';
+        $sql = 'SELECT * FROM usuarios where username="' . $user . '"and password="' . $contrasena . '"';
         $result = $bd->query($sql);
 
         if ($result->rowCount() > 0) {
             foreach ($result as $row) {
                 $_SESSION['username'] = $row['username'];
+                $nuevousers = new Usuario($row['id'], $row["username"], $row["password"], $row["rol"]);
             }
         } else {
             header("Location: ../index.php?error");
@@ -32,13 +33,13 @@ try {
     }
 
     $arraypeliculas = array();
-    $sql2 = 'SELECT * FROM peliculas';
+    $sql2 = 'SELECT p.id, p.titulo, p.anyo, p.genero, p.pais, p.cartel, a.id, a.nombre, a.apellidos, a.fotografia FROM peliculas p JOIN actuan c ON p.id = c.idPelicula JOIN actores a ON c.idActor = a.id;';
     $peliculas = $bd->query($sql2);
     foreach ($peliculas as $linea) {
-        $pelicula = new Pelicula($linea["id"], $linea["titulo"], $linea["genero"], $linea["pais"], $linea["anyo"], $linea["cartel"]);
+        $pelicula = new Pelicula($linea["id"], $linea["titulo"], $linea["genero"], $linea["pais"], $linea["anyo"], $linea["cartel"]);        
         array_push($arraypeliculas, $pelicula);
     }
-    ?>
+    ?>  
     <!DOCTYPE html>
     <html lang="es">
         <head>
@@ -66,13 +67,12 @@ try {
                         <?php
                         foreach ($arraypeliculas as $pelicula) {
                             ?>
-                            <div class="box__img">
+                            <div class="box__img border">
                                 <img class="img__pelicula" src="../assets/images/<?php echo $pelicula->getCartel() ?>" alt="">
                                 <p class="mt-3"><?php echo $pelicula->getTitulo() ?> </p>
                                 <p><?php echo "Año: " . $pelicula->getAnyo() ?></p>
 
                                 <?php
-                                $arrayactores = array();
                                 $sql3 = 'SELECT * FROM actores WHERE id = ' . $pelicula->getId();
                                 $actores = $bd->query($sql3);
                                 foreach ($actores as $lineaAct) {
@@ -80,8 +80,36 @@ try {
                                     echo 'Actor/es:';
                                     echo $actor->getNombre() . " " . $actor->getApellidos() . "<br>";
                                     ?>
-                                    <br><img class="img__actor" src="../assets/images/<?php echo $actor->getFotografia() ?>" alt="">
+                                    <br><img class="img__actor" src="../assets/images/<?php echo $actor->getFotografia() ?>" alt=""><br>
                                     <?php
+                                    if ($nuevousers->getRol() == 1) {
+                                        ?>
+                                        <button type="button" class="mt-3 btn__aniadir" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
+                                        <button type="button" class="mt-3 btn__borrar" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                                            -
+                                        </button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar Película</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        ¿Estás seguro de que desea eliminar esta película?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                        <button type="button" class="btn btn-danger">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
                                 }
                                 ?>
                             </div>
@@ -90,10 +118,11 @@ try {
                         ?>
                     </div>
                     <?php
-                    if ($_SESSION['username'] != "admin") {
+                    if ($nuevousers->getRol() != 1) {
                         ?>
                         <div class="mt-5 mb-5 pb-5 d-flex justify-content-evenly border-top pt-5">
-                            <form class="ml-5" method="post" action="">
+                            <!-- INICIO FORM CORREOS -->
+                            <form class="ml-5" method="post" action="./sendemail.php">
                                 <h2 class="form__h2">Enviar Incidencia</h2><br>
                                 <label class="box__peliculas">Asunto</label><br>
                                 <input class="form-control outline-0" type="text" name="subjet"> <br>
@@ -101,6 +130,7 @@ try {
                                 <textarea class="form-control outline-0" name="mensaje" rows="4" cols="50"></textarea><br>
                                 <button class="mt-3 p-2 form__btn d-flex justify-content-center border-0 rounded" type="submit" value="" name="send">Enviar</button>
                             </form>
+                            <!-- FIN FORM CORREOS -->
                             <div>
                                 <img class="form__img" src="../assets/images/incidencia.jpeg" alt="alt"/>
                             </div>
@@ -110,7 +140,7 @@ try {
                         ?>
                         <!-- INICIO FORM AÑADIR -->
                         <div class="mt-5 mb-5 pb-5 d-flex flex-column align-items-center border-top pt-5">
-                            <h2 class="mb-4">Añadir o Modificar Película</h2>
+                            <h2 class="mb-4">Añadir Película</h2>
                             <form class="box__peliculas d-flex flex-wrap" method="post" action="">
                                 <div class="me-3 ms-5">
                                     <label>Título:</label>
@@ -128,20 +158,9 @@ try {
                                     <label>Año:</label>
                                     <input class="form-control outline-0" type="text" name="anyo" required>
                                 </div>
-                                <button class="mt-3 btn__aniadir" type="submit"><i class="fa-solid fa-pencil"></i></button>
+                                <button class="mt-3 btn__aniadir bg-success" type="submit">+</button>
                             </form>
                             <!-- FIN FORM AÑADIR -->
-                            
-                            <!-- INICIO FORM BORRAR -->
-                            <h2 class="mb-4 mt-5">Eliminar Película</h2>
-                            <form class="box__peliculas d-flex flex-wrap" method="post" action="">
-                                <div class="me-3 ms-5">
-                                    <label>¿Cúal es el nombre de la película que desea eliminar?</label>
-                                    <input class="form-control outline-0" type="text" name="titulo" required>
-                                </div>
-                                <button class="mt-3 btn__borrar" type="submit">-</button>
-                            </form>
-                            <!-- FIN FORM BORRAR -->
                         </div>
                         <?php
                     }
