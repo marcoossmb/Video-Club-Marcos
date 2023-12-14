@@ -77,3 +77,27 @@
     height: 100px;
     object-fit: cover;
 }
+
+.btn__aniadir{
+    border-radius: 10px;
+    border: 0;
+    width: 50px;
+    font-size: 1.5rem;
+    color: white;
+    background-color: #B9D6E8;
+}
+.btn__aniadir:hover{
+    background-color: #5E819D;
+}
+
+.btn__borrar{
+    border-radius: 10px;
+    border: 0;
+    width: 50px;
+    font-size: 1.8rem;
+    color: white;
+    background-color: red;
+}
+.btn__borrar:hover{
+    background-color: rgb(195, 0, 0);
+}

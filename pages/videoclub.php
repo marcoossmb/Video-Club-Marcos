@@ -46,6 +46,7 @@ try {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="shortcut icon" href="../assets/images/logotipo.jpg" type="image/x-icon">
             <link rel="stylesheet" href="../css/videoclub.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
             <title>VideoClub • Marcos</title>
         </head>
@@ -76,9 +77,10 @@ try {
                                 $actores = $bd->query($sql3);
                                 foreach ($actores as $lineaAct) {
                                     $actor = new Actor($lineaAct["id"], $lineaAct["nombre"], $lineaAct["apellidos"], $lineaAct["fotografia"]);
-                                    echo $actor->getNombre() . " " . $actor->getApellidos();
+                                    echo 'Actor/es:';
+                                    echo $actor->getNombre() . " " . $actor->getApellidos() . "<br>";
                                     ?>
-                                    <br><img class="img__actor" src="../assets/images/<?php echo $actor->getFotografia()?>" alt="">
+                                    <br><img class="img__actor" src="../assets/images/<?php echo $actor->getFotografia() ?>" alt="">
                                     <?php
                                 }
                                 ?>
@@ -102,6 +104,44 @@ try {
                             <div>
                                 <img class="form__img" src="../assets/images/incidencia.jpeg" alt="alt"/>
                             </div>
+                        </div>
+                        <?php
+                    } else {
+                        ?>
+                        <!-- INICIO FORM AÑADIR -->
+                        <div class="mt-5 mb-5 pb-5 d-flex flex-column align-items-center border-top pt-5">
+                            <h2 class="mb-4">Añadir o Modificar Película</h2>
+                            <form class="box__peliculas d-flex flex-wrap" method="post" action="">
+                                <div class="me-3 ms-5">
+                                    <label>Título:</label>
+                                    <input class="form-control outline-0" type="text" name="titulo" required>
+                                </div>
+                                <div class="me-3">
+                                    <label>Género:</label>
+                                    <input class="form-control outline-0" type="text" name="genero" required>
+                                </div>
+                                <div class="me-3">
+                                    <label>Pais:</label>
+                                    <input class="form-control outline-0" type="text" name="pais" required>
+                                </div>
+                                <div class="me-3">
+                                    <label>Año:</label>
+                                    <input class="form-control outline-0" type="text" name="anyo" required>
+                                </div>
+                                <button class="mt-3 btn__aniadir" type="submit"><i class="fa-solid fa-pencil"></i></button>
+                            </form>
+                            <!-- FIN FORM AÑADIR -->
+                            
+                            <!-- INICIO FORM BORRAR -->
+                            <h2 class="mb-4 mt-5">Eliminar Película</h2>
+                            <form class="box__peliculas d-flex flex-wrap" method="post" action="">
+                                <div class="me-3 ms-5">
+                                    <label>¿Cúal es el nombre de la película que desea eliminar?</label>
+                                    <input class="form-control outline-0" type="text" name="titulo" required>
+                                </div>
+                                <button class="mt-3 btn__borrar" type="submit">-</button>
+                            </form>
+                            <!-- FIN FORM BORRAR -->
                         </div>
                         <?php
                     }
