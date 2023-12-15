@@ -30,7 +30,7 @@
                         </div>
                         <div class="mt-4 box__form">
                             <label class="form-label">Contraseña</label>
-                            <input maxlength="15" name="password" type="password" class="form-control w-50 outline-0" id="inputPassword1">
+                            <input maxlength="20" name="password" type="password" class="form-control w-50 outline-0" id="inputPassword1">
                         </div>
                         <?php
                         if (isset($_GET ['error'])) {

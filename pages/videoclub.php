@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Verificar credenciales de usuario
         $user = $_POST['user'];
         $contrasena = hash("sha256", $_POST['password']);
+        $contrasena2 = $_POST['password'];
 
         $sql = "SELECT * FROM usuarios WHERE username = :user AND password = :password";
         $stmt = $bd->prepare($sql);
@@ -37,8 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql2 = 'SELECT * FROM peliculas';
         $peliculas = $bd->query($sql2);
         foreach ($peliculas as $linea) {
-            $pelicula = new Pelicula($linea["id"], $linea["titulo"], $linea["genero"], $linea["pais"], $linea["anyo"], $linea["cartel"]);
-            array_push($arraypeliculas, $pelicula);
+            $peliculanueva = new Pelicula($linea["id"], $linea["titulo"], $linea["genero"], $linea["pais"], $linea["anyo"], $linea["cartel"]);
+            array_push($arraypeliculas, $peliculanueva);
         }
         ?>  
         <!DOCTYPE html>
@@ -76,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <?php
                                     echo 'Actor/es:<br>';
                                     echo '<br>';
-                                    $sql3 = 'SELECT * FROM actores';
+                                    $sql3 = 'SELECT * FROM actores where id IN (SELECT idActor FROM actuan WHERE idPelicula=' . $pelicula->getId() . ');';
                                     $actores = $bd->query($sql3);
                                     foreach ($actores as $lineaAct) {
                                         $actor = new Actor($lineaAct["id"], $lineaAct["nombre"], $lineaAct["apellidos"], $lineaAct["fotografia"]);
@@ -91,10 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <button type="button" class="mt-3 btn__aniadir" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             <i class="fa-solid fa-pencil"></i>
                                         </button>
-                                        <button type="button" class="mt-3 btn__borrar" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                                        <button type="button" class="mt-3 btn__borrar" data-bs-toggle="modal" data-bs-target="#exampleModal2" data-id="<?php echo $pelicula->getId(); ?>">
                                             -
                                         </button><br>
-                                        <!-- Modal -->
+                                        <!-- INICIO MODAL BORRAR -->
                                         <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -104,14 +105,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     </div>
                                                     <div class="modal-body">
                                                         ¿Estás seguro de que desea eliminar esta película?
+                                                        <?php echo '<br>'.$pelicula->getTitulo() ?>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                        <button type="button" class="btn btn-danger">Eliminar</button>
+                                                        <a href="../pages/eliminarpelicula.php?id=<?php echo $pelicula->getId(); ?>" type="button" class="btn btn-danger">Eliminar</a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- FIN MODAL BORRAR -->
+                                        
+                                        <!-- INICIO MODAL MODIFICAR -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModal" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar Película</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-">
+                                                        <form class="box__peliculas d-flex flex-column align-items-center" method="post" action="">
+                                                            <div class="mt-3">
+                                                                <label>Título:</label>
+                                                                <input class="form-control outline-0" type="text" name="titulo" required>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <label>Género:</label>
+                                                                <input class="form-control outline-0" type="text" name="genero" required>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <label>Pais:</label>
+                                                                <input class="form-control outline-0" type="text" name="pais" required>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <label>Año:</label>
+                                                                <input class="form-control outline-0" type="text" name="anyo" required>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <label>Cartel:</label>
+                                                                <input class="form-control outline-0" type="text" name="cartel" placeholder="cartel.jpg" required>
+                                                            </div>
+                                                            <div class="mt-3 mb-3">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                <button type="button" class="btn btn-primary">Modificar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- FIN MODAL MODIFICAR -->
                                         <?php
                                     }
                                     ?>
