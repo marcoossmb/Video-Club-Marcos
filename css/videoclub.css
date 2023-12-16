@@ -37,7 +37,7 @@
     font-family: "arial";
 }
 .box__img {
-    width: 300px;
+    width: 500px;
     margin: 20px;
     text-align: center;
     padding: 10px;
@@ -86,6 +86,7 @@
     font-size: 1.8rem;
     color: white;
     background-color: #B9D6E8;
+    text-decoration: none;
 }
 .btn__aniadir:hover{
     background-color: #5E819D;
@@ -95,9 +96,10 @@
     border-radius: 10px;
     border: 0;
     width: 50px;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     color: white;
     background-color: red;
+    text-decoration: none;
 }
 .btn__borrar:hover{
     background-color: rgb(195, 0, 0);

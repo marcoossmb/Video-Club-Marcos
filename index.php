@@ -1,3 +1,8 @@
+<?php
+if (isset($_SESSION["nombre"])) {
+    header('Location: ./pages/videoclub.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -34,10 +39,10 @@
                         </div>
                         <?php
                         if (isset($_GET ['error'])) {
-                        echo '<div class="mt-4">
+                            echo '<div class="mt-4">
                                 <p class="text-center text-danger font fw-bold">Usuario o Contraseña incorrecto</p>
                               </div>';
-                        }                   
+                        }
                         ?>                        
                         <button class="mt-3 main__btn d-flex justify-content-center border-0 rounded" type="submit">Entrar</button>
                     </form>
