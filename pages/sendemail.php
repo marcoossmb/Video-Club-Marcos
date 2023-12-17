@@ -32,7 +32,7 @@
         echo
         "
         <script>
-        document.location.href = './videoclub.php';
+        document.location.href = './videoclub.php?correo=true';
         </script>
         ";
 }

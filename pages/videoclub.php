@@ -103,14 +103,14 @@ try {
                             if ($nuevousers->getRol() == 1) {
                                 ?>
                                 <div>
-                                    <a href="" class="p-1 ps-2 mt-3 btn__aniadir me-1">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </a>
                                     <?php
                                     $_SESSION["idPeli"] = $pelicula->getId();
                                     $_SESSION["titlePeli"] = $pelicula->getTitulo();
                                     ?>
-                                    <a href="./eliminarpelicula.php" class="p-1 pe-3 ps-3 pt-2 mt-3 btn__borrar">
+                                    <a href="./modificarpelicula.php?modi=<?php echo $_SESSION["idPeli"] ?>" class="p-1 ps-2 mt-3 btn__aniadir me-1">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </a>
+                                    <a href="./eliminarpelicula.php?elimi=<?php echo $_SESSION["idPeli"] ?>&&title=<?php echo $_SESSION["titlePeli"] ?>" class="p-1 pe-3 ps-3 pt-2 mt-3 btn__borrar">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
@@ -125,9 +125,14 @@ try {
             <?php
             if ($nuevousers->getRol() != 1) {
                 ?>
-                <div class="mt-5 mb-5 pb-5 d-flex align-items-center justify-content-evenly border-top pt-5">
+                <div class="mt-5 mb-5 pb-5 d-flex align-items-center justify-content-evenly border-top pt-5">                    
                     <!-- INICIO FORM CORREOS -->
                     <form class="ml-5" method="post" action="./sendemail.php">
+                        <?php
+                        if (isset($_GET['correo'])) {
+                            echo '<p class="text-white bg-success bg-gradient bg-opacity-75 box__peliculas rounded p-1">Correo enviado correctamente</p>';
+                        }
+                        ?>
                         <h2 class="form__h2">Enviar Incidencia</h2><br>
                         <label class="box__peliculas">Asunto</label><br>
                         <input class="form-control outline-0" type="text" name="subjet"> <br>

@@ -4,7 +4,7 @@ session_start();
 if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
 }
-if ($_SESSION["rol"] == 0) {
+if ($_SESSION["rol"] != 1) {
     header("Location: ./videoclub.php");
 }
 ?>
@@ -34,13 +34,13 @@ if ($_SESSION["rol"] == 0) {
                     // Elimina la relación actúan
                     $sql = "DELETE FROM actuan WHERE idPelicula = :id";
                     $borrarActuan = $bd->prepare($sql);
-                    $borrarActuan->bindParam(':id', $_SESSION["idPeli"]);
+                    $borrarActuan->bindParam(':id', $_GET["elimi"]);
                     $borrarActuan->execute();
 
                     // Elimina la película
                     $sqlElimina = "DELETE FROM peliculas WHERE id = :id";
                     $stmtEliminar = $bd->prepare($sqlElimina);
-                    $stmtEliminar->bindParam(':id', $_SESSION["idPeli"]);
+                    $stmtEliminar->bindParam(':id', $_GET["elimi"]);
                     $stmtEliminar->execute();
 
                     header("Location: ./videoclub.php");
@@ -56,16 +56,31 @@ if ($_SESSION["rol"] == 0) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" >Eliminar Película</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                ¿Estás seguro de que desea eliminar esta película?
-                                <?php echo '<h4 class="text-center fw-bold">' . $_SESSION["titlePeli"] . '</h4>'; ?>
+                                <?php
+                                if (!isset($_GET["elimi"]) || !isset($_GET["title"])) {
+                                    echo
+                                    '<p class="text-center fw-bold text-danger">Ninguna pelicula seleccionada</p>';
+                                } else {
+                                    echo
+                                    '¿Estás seguro de que desea eliminar esta película?
+                                <h4 class="text-center fw-bold">' . $_GET["title"] . '</h4>';
+                                }
+                                ?>
                             </div>
-                            <form class="modal-footer" action="./eliminarpelicula.php" method="post">
-                                <a href="./videoclub.php" class="btn btn-secondary">Cerrar</a>
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
+                            <?php
+                            if (isset($_GET["elimi"]) && isset($_GET["title"])) {
+                                ?>
+                                <form class="modal-footer" action="./eliminarpelicula.php?elimi=<?php echo $_GET["elimi"]; ?>" method="post">
+                                    <a href="./videoclub.php" class="btn btn-secondary">Cerrar</a>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                                <?php
+                            } else {
+                                echo '<a href="./videoclub.php" class="btn btn-secondary">Cerrar</a>';
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -73,7 +88,6 @@ if ($_SESSION["rol"] == 0) {
                 <?php
             }
             ?>
-
         </div>    
     </body>
 </html>
