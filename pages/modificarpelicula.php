@@ -3,8 +3,7 @@ session_start();
 
 if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
-}
-if ($_SESSION["rol"] != 1) {
+} else if ($_SESSION["rol"] != 1) {
     header("Location: ./videoclub.php");
 }
 ?>
