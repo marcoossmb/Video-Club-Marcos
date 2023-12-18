@@ -2,8 +2,9 @@
 
 if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
-} else if ($_SESSION["rol"] != 1) {
-    header("Location: ./videoclub.php");
+}
+if ($_SESSION["rol"] != 1) {
+    header("Location: ../index.php");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -44,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         for ($i = 1; $i <= $buclerand; $i++) {
 
             //Sacar actores        
-            $sqlIdActor = "SELECT a.id FROM actores a JOIN actuan ac ON a.id = ac.idActor ORDER BY RAND() LIMIT 1;";
+            $sqlIdActor = "SELECT id FROM actores ORDER BY RAND() LIMIT 1;";
             $stmtIdActor = $bd->prepare($sqlIdActor);
 
             if ($stmtIdActor->rowCount() == 0) {

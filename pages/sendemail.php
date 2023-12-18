@@ -6,7 +6,7 @@ if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
 } 
 if ($_SESSION["rol"] != 1) {
-    header("Location: ./videoclub.php");
+    header("Location: ../index.php");
 }
 
 use PHPMailer\PHPMailer\PHPMailer;

@@ -3,9 +3,9 @@ session_start();
 
 if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
-} 
+}
 if ($_SESSION["rol"] != 1) {
-    header("Location: ./videoclub.php");
+    header("Location: ../index.php");
 }
 ?>
 <!DOCTYPE html>
@@ -27,7 +27,7 @@ if ($_SESSION["rol"] != 1) {
                 $pais = $_POST['pais'];
                 $anyo = $_POST['anyo'];
                 $cartel = $_POST['cartel'];
-                
+
                 // Eliminar la pelicula
                 $cadena_conexion = 'mysql:dbname=videoclub;host=127.0.0.1';
                 $usuariobd = 'root';
@@ -38,7 +38,7 @@ if ($_SESSION["rol"] != 1) {
                     $bd = new PDO($cadena_conexion, $usuariobd, $clavebd);
 
                     // MOdifica la película
-                    $sqlUpdate = "UPDATE peliculas SET titulo = '$titulo', genero = '$genero', pais = '$pais', anyo = '$anyo', cartel = '$cartel' WHERE id = :id;";                    
+                    $sqlUpdate = "UPDATE peliculas SET titulo = '$titulo', genero = '$genero', pais = '$pais', anyo = '$anyo', cartel = '$cartel' WHERE id = :id;";
                     $stmtUpdate = $bd->prepare($sqlUpdate);
                     $stmtUpdate->bindParam(':id', $_GET["modi"]);
                     $stmtUpdate->execute();
@@ -58,6 +58,13 @@ if ($_SESSION["rol"] != 1) {
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar Película</h1>
                             </div>
                             <div class="modal-body">
+                                <?php
+                                if (!isset($_GET["modi"])) {
+                                    echo'<p class="text-center fw-bold text-danger">Ninguna pelicula seleccionada</p>';
+                                    echo '<a href="./videoclub.php" class="btn btn-secondary">Cerrar</a>';
+                                } else {
+                                                                                                        
+                                ?>
                                 <form class="box__peliculas d-flex flex-column align-items-center" method="post" action="./modificarpelicula.php?modi=<?php echo $_GET["modi"]; ?>">
                                     <div class="mt-3">
                                         <label>Título:</label>
@@ -84,6 +91,9 @@ if ($_SESSION["rol"] != 1) {
                                         <button type="submit" class="btn btn-primary">Modificar</button>
                                     </div>                                        
                                 </form>
+                                <?php
+                                }
+                                ?>
                             </div>                                                   
                         </div>
                     </div>
