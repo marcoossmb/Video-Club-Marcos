@@ -28,7 +28,6 @@ if ($_SESSION["rol"] != 1) {
                 $anyo = $_POST['anyo'];
                 $cartel = $_POST['cartel'];
 
-                // Eliminar la pelicula
                 $cadena_conexion = 'mysql:dbname=videoclub;host=127.0.0.1';
                 $usuariobd = 'root';
                 $clavebd = '';
@@ -37,7 +36,7 @@ if ($_SESSION["rol"] != 1) {
                     // Se crea la conexión con la base de datos
                     $bd = new PDO($cadena_conexion, $usuariobd, $clavebd);
 
-                    // MOdifica la película
+                    // Modifica la película
                     $sqlUpdate = "UPDATE peliculas SET titulo = '$titulo', genero = '$genero', pais = '$pais', anyo = '$anyo', cartel = '$cartel' WHERE id = :id;";
                     $stmtUpdate = $bd->prepare($sqlUpdate);
                     $stmtUpdate->bindParam(':id', $_GET["modi"]);
@@ -45,7 +44,7 @@ if ($_SESSION["rol"] != 1) {
 
                     header("Location: ./videoclub.php");
                 } catch (Exception $e) {
-                    echo "Error al hacer el update: " . $e->getMessage();
+                    header("Location: ./servererror.php");
                 }
             } else {
                 // Mostrar el formulario de confirmación

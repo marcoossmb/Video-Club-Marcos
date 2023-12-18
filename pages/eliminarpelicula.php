@@ -45,7 +45,7 @@ if ($_SESSION["rol"] != 1) {
 
                     header("Location: ./videoclub.php");
                 } catch (Exception $e) {
-                    echo "Error al hacer el delete: " . $e->getMessage();
+                    header("Location: ./servererror.php");
                 }
             } else {
                 // Mostrar el formulario de confirmación

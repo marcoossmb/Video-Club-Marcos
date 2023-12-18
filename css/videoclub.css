@@ -104,3 +104,13 @@
 .btn__borrar:hover{
     background-color: rgb(195, 0, 0);
 }
+
+.lastconection{
+    position: absolute;
+    left: 400px;
+    top: 5px;
+    text-decoration: none;
+    color: black;
+    padding: 5px;
+    font-family: "arial";
+}

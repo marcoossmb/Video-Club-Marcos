@@ -24,7 +24,7 @@ if (isset($_SESSION["nombre"])) {
             <!-- INICIO DEL MAIN -->
             <main class="main">
                 <div class="mt-5 box__img">
-                    <img class="main__img rounded" src="./assets/images/logotipo.jpg" alt="alt"/>
+                    <img class="main__img rounded" src="./assets/images/logotipo.jpg" alt="">
                 </div>
                 <div class="mt-5 d-flex flex-column align-items-center">
                     <h2 class="main__title">Iniciar Sesión</h2>

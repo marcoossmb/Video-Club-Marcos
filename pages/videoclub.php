@@ -1,13 +1,17 @@
 <?php
+// Se incluyen los archivos necesarios
 include '../lib/model/usuario.php';
 include '../lib/model/pelicula.php';
 include '../lib/model/actor.php';
+include '../functions/funciones.php';
 
 session_start();
 
-$fecha = date("d/m/Y | H:i:s");
+// Se obtiene la fecha actual
+$fecha = date('d-m-Y H:i:s');
 
 try {
+    // Detalles de la conexión a la base de datos
     $cadena_conexion = 'mysql:dbname=videoclub;host=127.0.0.1';
     $usuario = 'root';
     $clave = '';
@@ -19,40 +23,16 @@ try {
         $user = $_POST['user'];
         $contrasena = hash("sha256", $_POST['password']);
     } else {
+        // Si la sesión ya está iniciada, se obtienen los datos de la sesión
         $user = $_SESSION['nombre'];
         $contrasena = $_SESSION['pass'];
     }
 
-    $sql = "SELECT * FROM usuarios WHERE username = :user AND password = :password";
-    $stmt = $bd->prepare($sql);
-    $stmt->bindParam(':user', $user);
-    $stmt->bindParam(':password', $contrasena);
+    // Obtiene información del usuario desde la base de datos
+    $nuevousers = obtenerUsuario($bd, $user, $contrasena, $fecha);
 
-    $stmt->execute();
-
-    if ($stmt->rowCount() > 0) {
-
-        foreach ($stmt as $row) {
-            $nuevousers = new Usuario($row['id'], $row["username"], $row["password"], $row["rol"]);
-        }
-
-        setcookie("nombre", $user, time() + 30 * 24 * 3600, "/");
-        setcookie("lastconexion", $fecha, time() + 20 * 24 * 3600, "/");
-
-        $_SESSION['nombre'] = $nuevousers->getUsername();
-        $_SESSION['pass'] = $nuevousers->getPassword();
-        $_SESSION['rol'] = $nuevousers->getRol();
-    } else {
-        header("Location: ../index.php?error");
-    }
-
-    $arraypeliculas = array();
-    $sql2 = 'SELECT * FROM peliculas';
-    $peliculas = $bd->query($sql2);
-    foreach ($peliculas as $linea) {
-        $peliculanueva = new Pelicula($linea["id"], $linea["titulo"], $linea["genero"], $linea["pais"], $linea["anyo"], $linea["cartel"]);
-        array_push($arraypeliculas, $peliculanueva);
-    }
+    // Obtiene un array de películas desde la base de datos
+    $arraypeliculas = obtenerPeliculas($bd);
     ?>  
     <!DOCTYPE html>
     <html lang="es">
@@ -76,6 +56,7 @@ try {
                 <!-- INICIO DEL MAIN -->
                 <main class="main">
                     <a href="./cerrarSesion.php" class="link">Cerrar Sesión</a>
+                    <p class="lastconection"> <?php echo 'Última conexión: ' . $fecha ?> </p>
                     <h2 class="ms-5">Películas</h2>
                     <div class="d-flex flex-wrap box__peliculas">
                         <?php
@@ -84,19 +65,9 @@ try {
                             <div class="box__img border">
                                 <img class="img__pelicula" src="../assets/images/<?php echo $pelicula->getCartel() ?>" alt="">
                                 <p class="mt-3"><?php echo $pelicula->getTitulo() ?> </p>
-                                <p><?php echo "Año: " . $pelicula->getAnyo() ?></p>
-                                <div class="d-flex flex-wrap justify-content-center">
-                                    <?php
-                                    $sql3 = 'SELECT * FROM actores where id IN (SELECT idActor FROM actuan WHERE idPelicula=' . $pelicula->getId() . ');';
-                                    $actores = $bd->query($sql3);
-                                    foreach ($actores as $lineaAct) {
-                                        $actor = new Actor($lineaAct["id"], $lineaAct["nombre"], $lineaAct["apellidos"], $lineaAct["fotografia"]);
-                                        echo '<div class="m-3"><p class="mb-0">' . $actor->getNombre() . " " . $actor->getApellidos() . "</p>";
-                                        ?>
-                                        <img class="img__actor mb-4" src="../assets/images/<?php echo $actor->getFotografia() ?>" alt="">
-                                    </div>
-                                    <?php
-                                }
+                                <p><?php echo "Año: " . $pelicula->getAnyo() ?></p>                                
+                                <?php
+                                mostrarActoresPorPelicula($bd, $pelicula);
                                 ?>
                             </div>
                             <?php
@@ -110,32 +81,26 @@ try {
                                     <a href="./modificarpelicula.php?modi=<?php echo $_SESSION["idPeli"] ?>" class="p-1 ps-2 mt-3 btn__aniadir me-1">
                                         <i class="fa-solid fa-pencil"></i>
                                     </a>
-                                    <a href="./eliminarpelicula.php?elimi=<?php echo $_SESSION["idPeli"] ?>&&title=<?php echo $_SESSION["titlePeli"] ?>" class="p-1 pe-3 ps-3 pt-2 mt-3 btn__borrar">
+                                    <a href="./eliminarpelicula.php?elimi=<?php echo $_SESSION["idPeli"] ?>&title=<?php echo urlencode($_SESSION["titlePeli"]); ?>" class="p-1 pe-3 ps-3 pt-2 mt-3 btn__borrar">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
                                 <?php
                             }
                             ?>
-                        </div>
+                    </div>
                         <?php
                     }
                     ?>
+                    </div>
                 </main>
+                <!-- FIN DEL MAIN -->
+
                 <div class="d-flex flex-column box__peliculas align-items-center">
                     <h3>Actores en paro</h3>
                     <div class="d-flex flex-wrap">
                         <?php
-                        $sqlParo = 'SELECT * FROM actores a LEFT JOIN actuan ac ON a.id = ac.idActor WHERE ac.idActor IS NULL;';
-                        $actores = $bd->query($sqlParo);
-                        foreach ($actores as $actorparo) {
-                            $actor = new Actor($actorparo["id"], $actorparo["nombre"], $actorparo["apellidos"], $actorparo["fotografia"]);
-                            echo '<div class="m-3 d-flex flex-column align-items-center"><p class="mb-0">' . $actor->getNombre() . " " . $actor->getApellidos() . '</p>
-                                      <img class="img__actor mb-4" src="../assets/images/' . $actor->getFotografia() . '" alt=""></div>';
-                            ?>
-
-                            <?php
-                        }
+                        mostrarActoresParo($bd);
                         ?>
                     </div>
                 </div>
@@ -187,7 +152,7 @@ try {
                             </div>
                             <div class="me-3">
                                 <label>Cartel:</label>
-                                <input class="form-control outline-0 text-dark" type="text" name="cartel" placeholder="toy_story.jpg" required>
+                                <input class="form-control outline-0 text-dark" type="text" name="cartel" placeholder="cars.jpg" required>
                             </div>
                             <button class="mt-3 btn__aniadir bg-success" type="submit">+</button>
                         </form>
@@ -205,5 +170,5 @@ try {
 // Se cierra la conexión
     $bd = null;
 } catch (Exception $e) {
-    echo "Error con la base de datos: " . $e->getMessage();
+    header("Location: ./servererror.php");
 }  

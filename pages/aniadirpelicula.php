@@ -66,6 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         header("Location: ./videoclub.php");
     } catch (Exception $e) {
-        echo "Error al hacer el insert: " . $e->getMessage();
+        header("Location: ./videoclub.php");
     }
 }
