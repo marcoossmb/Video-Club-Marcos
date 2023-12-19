@@ -5,8 +5,9 @@ session_start();
 if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
 } 
-if ($_SESSION["rol"] != 1) {
-    header("Location: ../index.php");
+if ($_SESSION["rol"] != 0) {
+    header("Location: ./videoclub.php");
+
 }
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -39,10 +40,5 @@ if (isset($_POST["send"])) {
 
     $mail->send();
 
-    echo
-    "
-        <script>
-        document.location.href = './videoclub.php?correo=true';
-        </script>
-        ";
+    header("Location: ./videoclub.php?correo=true");
 }

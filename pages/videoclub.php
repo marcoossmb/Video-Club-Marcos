@@ -117,9 +117,9 @@ try {
                             ?>
                             <h2 class="form__h2">Enviar Incidencia</h2><br>
                             <label class="box__peliculas">Asunto</label><br>
-                            <input class="form-control outline-0" type="text" name="subjet"> <br>
+                            <input class="form-control outline-0" type="text" name="subjet" required> <br>
                             <label class="box__peliculas">Mensaje</label><br>
-                            <textarea class="form-control outline-0" name="mensaje" rows="4" cols="50"></textarea><br>
+                            <textarea class="form-control outline-0" name="mensaje" rows="4" cols="50" required></textarea><br>
                             <button class="mt-3 p-2 form__btn d-flex justify-content-center border-0 rounded" type="submit" value="" name="send">Enviar</button>
                         </form>
                         <!-- FIN FORM CORREOS -->

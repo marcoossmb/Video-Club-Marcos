@@ -4,7 +4,7 @@ if (!$_SESSION["nombre"]) {
     header("Location: ../index.php");
 }
 if ($_SESSION["rol"] != 1) {
-    header("Location: ../index.php");
+    header("Location: ./videoclub.php");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
